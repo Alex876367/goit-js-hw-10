@@ -1,43 +1,68 @@
-import iziToast from 'izitoast';
-import 'izitoast/dist/css/iziToast.min.css';
+//TODO: Генератор промісів
+//? Напиши скрипт, який після сабміту форми створює проміс.  
 
-const formEl = document.querySelector('.form');
-const refs = {
-  delay: formEl.elements.delay,
-  state: formEl.elements.state,
-};
+//* Import libraries
+import iziToast from "izitoast";
+import "izitoast/dist/css/iziToast.min.css";
+
+//* Find elements 
+const formEl = document.querySelector('form');
+const delayInput = document.querySelector('.delay-input');
+const stateInputFieldset = document.querySelector('.state-input-fieldset');
+const notificatBtn = document.querySelector('.notificate-btn');
+const radio = document.querySelectorAll('.radio-input');
+
+//* Add event listener
+const onFormSubmit = delay => {
+    let promiseStatus;
+    radio.forEach((el) => {
+        if (el.checked) {
+                promiseStatus = el.value;
+        }
+    });
+
+    let promise = new Promise((resolve, reject) => {
+        setTimeout(() => {
+            if (promiseStatus === 'fulfilled') {
+                resolve(`✅ Fulfilled promise in ${delay}ms`);
+            } else if(promiseStatus === 'rejected') {
+                reject(`❌ Rejected promise in ${delay}ms`);
+            }
+        }, delay);
+    });
+
+    return promise;
+}
 
 formEl.addEventListener('submit', event => {
-  event.preventDefault();
-  function makePromise(delay, state) {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        if (state === 'fulfilled') {
-          resolve(delay);
-        } else {
-          reject(delay);
-        }
-      }, delay);
-    });
-  }
+    event.preventDefault();
+    
+    onFormSubmit(delayInput.value)
+    .then(message => {
+        console.log(message);
 
-  const promise = makePromise(refs.delay.value, refs.state.value);
-
-  promise
-    .then(delay => {
-      iziToast.success({
-        color: 'green',
-        position: 'topRight',
-        message: `✅ Fulfilled promise in ${delay}ms`,
-      });
+        iziToast.show({
+            message: message,
+            messageColor: 'white',
+            messageSize: '30',
+            backgroundColor: 'green',
+            theme: 'light',
+        });
     })
-    .catch(delay => {
-      iziToast.error({
-        color: 'red',
-        position: 'topRight',
-        message: `❌ Rejected promise in ${delay}ms`,
-      });
-    });
+    .catch(message => {
+        console.log(message); 
 
-  formEl.reset();
+        iziToast.show({
+            message: message,
+            messageColor: 'white',
+            messageSize: '30',
+            backgroundColor: 'red',
+            theme: 'light',
+        });
+    })
+
+    delayInput.value = '';
+    radio.forEach((el) => {
+        el.checked = false;
+    });
 });
