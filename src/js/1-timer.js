@@ -64,8 +64,7 @@ const timer = {
             if(diff <= 0){
                 timer.stop();
 
-                startBtn.removeAttribute("disabled", "");
-                startBtn.classList.remove('disabled');
+               
                 dateInput.removeAttribute("disabled", "");
                 dateInput.classList.remove('error');
 
