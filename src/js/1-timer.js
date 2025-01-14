@@ -65,8 +65,7 @@ const timer = {
                 timer.stop();
 
                
-                dateInput.removeAttribute("disabled", "");
-                dateInput.classList.remove('error');
+                
 
                 iziToast.show({
                     message: 'Time is out!🎉',
